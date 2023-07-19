@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const User = require("../models/userModel")
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
-
+const ImageModel = require("../models/imageModel")
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -75,9 +75,22 @@ async function getUserById(id){
     return user;
   }
 
+
+  async function addImage(author,width,height,url,download_url){
+ 
+    let image = await ImageModel.create({
+        author,width,height,url,download_url 
+     })
+     image = image.toJSON();
+
+
+    return image;
+}
+
   module.exports = {
     signup,
     login,
     verifyToken,
     getUserById,
+    addImage
 }

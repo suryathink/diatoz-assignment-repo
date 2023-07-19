@@ -1,6 +1,6 @@
 const express = require("express");
 
-const {signup,login,verifyToken,getUserById} = require("../controllers/authController");
+const {signup,login,verifyToken,getUserById,addImage} = require("../controllers/authController");
 
 const authRouter = express.Router();
 
@@ -41,6 +41,28 @@ authRouter.post("/login", async(req, res) => {
         
         return res.status(500).send({
             error:'Something went wrong, Either Email or password is Wrong'
+        })
+    }
+
+
+});
+
+
+authRouter.post("/sendimage", async(req, res) => {
+    try {
+        const {author,width,height,url,download_url} = req.body;
+      
+        const data = await addImage(author,width,height,url,download_url);
+        
+        return res.send({
+           message:'Image Addition to Database Successful',
+           data
+        })
+    } catch (err) {
+        console.log(err);
+        
+        return res.status(500).send({
+            error:'Something went wrong'
         })
     }
 
