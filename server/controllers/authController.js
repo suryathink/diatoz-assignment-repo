@@ -3,6 +3,7 @@ const User = require("../models/userModel")
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const ImageModel = require("../models/imageModel")
+
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 

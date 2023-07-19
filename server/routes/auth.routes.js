@@ -1,6 +1,8 @@
 const express = require("express");
 
 const {signup,login,verifyToken,getUserById,addImage} = require("../controllers/authController");
+const authorization = require("../middlewares/authorization");
+const imageModel= require("../models/imageModel")
 
 const authRouter = express.Router();
 
@@ -69,6 +71,23 @@ authRouter.post("/sendimage", async(req, res) => {
 
 });
 
+
+
+
+authRouter.get('/getImages', async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const itemsPerPage = 10;
+    
+      const startIndex = (page - 1) * itemsPerPage;
+    
+      const images = await imageModel.find().skip(startIndex).limit(itemsPerPage);
+    
+      res.status(200).json(images);
+    } catch (error) {
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
 
 
 module.exports = authRouter;
