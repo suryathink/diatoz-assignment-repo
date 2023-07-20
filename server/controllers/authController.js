@@ -61,10 +61,12 @@ async function login(email,password){
                 }    
             }
         }else{
+            
             throw new Error('password does not match')
         }
     }else{
-       throw new Error("USER DOES NOT EXIST");
+        
+        throw new Error('User Already Present')
     }
 }
 

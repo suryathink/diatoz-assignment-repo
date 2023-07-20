@@ -21,8 +21,14 @@ authRouter.post("/signup", async(req, res) => {
         })
     } catch (err) {
         console.log(err);
-        return res.status(500).send({
-            error:'Something went wrong'
+        let errorMessage = 'Something went wrong';
+
+        if (err.message === 'User already exists') {
+            errorMessage = 'User already exists,';
+          }
+
+        return res.status(400).send({
+            error:errorMessage
         })
     }
 });
@@ -31,20 +37,29 @@ authRouter.post("/signup", async(req, res) => {
 
 authRouter.post("/login", async(req, res) => {
     try {
+        
         const {email,password} = req.body;
       
         const data = await login(email, password);
-        
-        return res.send({
-           message:'Login Successful',
-           data
-        })
+     
+             return res.send({
+                message:'Login Successfull',
+                data
+             })
+
     } catch (err) {
         console.log(err);
+        let errorMessage = 'Something went wrong, Either Email or password is Wrong';
         
-        return res.status(500).send({
-            error:'Something went wrong, Either Email or password is Wrong'
-        })
+        if (err.message === 'password does not match') {
+            errorMessage = 'Password Does Not Match';
+          } else if (err.message === 'User Already Present') {
+            errorMessage = 'User with this email Does Not Exist';
+          }
+
+        return res.status(401).send({
+          error: errorMessage,
+        });
     }
 
 
