@@ -1,8 +1,9 @@
 const express = require("express");
 
-const {signup,login,verifyToken,getUserById,addImage} = require("../controllers/authController");
+const {signup,login,verifyToken,getUserById,addImage,addTokenToBlacklist} = require("../controllers/authController");
 const authorization = require("../middlewares/authorization");
 const imageModel= require("../models/imageModel")
+const blacklistTokenData = require("../models/blacklist");
 
 const authRouter = express.Router();
 
@@ -74,7 +75,7 @@ authRouter.post("/sendimage", async(req, res) => {
 
 
 
-authRouter.get('/getImages', async (req, res) => {
+authRouter.get('/getImages',authorization, async (req, res) => {
     try {
       const page = parseInt(req.query.page) || 1;
       const itemsPerPage = 10;
@@ -89,5 +90,26 @@ authRouter.get('/getImages', async (req, res) => {
     }
   });
 
+   
+  authRouter.get("/logout", authorization, async(req, res) => {
+    try {
 
+        const token = req.headers.authorization?.split(" ")[1]
+
+
+        const data = await addTokenToBlacklist(token);
+        
+        return res.send({
+           message:'Logout Successful'
+        })
+    
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send({
+            error:'Something went wrong'
+        })
+    }
+
+   
+  })
 module.exports = authRouter;

@@ -3,6 +3,7 @@ const User = require("../models/userModel")
 const dotenv = require('dotenv');
 const jwt = require('jsonwebtoken');
 const ImageModel = require("../models/imageModel")
+const blacklistTokenData = require("../models/blacklist");
 
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -88,10 +89,20 @@ async function getUserById(id){
     return image;
 }
 
+  async function addTokenToBlacklist(token){
+ 
+    let blacklisted = await blacklistTokenData.create({ token })
+
+
+    return blacklisted;
+}
+
   module.exports = {
     signup,
     login,
     verifyToken,
     getUserById,
-    addImage
+    addImage,
+    addTokenToBlacklist
+    
 }

@@ -2,7 +2,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const jwt = require('jsonwebtoken');
 const User = require("../models/userModel");
-
+const blacklistTokenData = require("../models/blacklist")
 
 const {signup,login,verifyToken, getUserById,addImage}= require("../controllers/authController")
 
@@ -12,10 +12,19 @@ async function authMiddleware(req, res, next) {
 
         const authHeader = headers['authorization'];
 
+        
+
         if (authHeader) {
 
             const token = authHeader.split(' ').pop();
-
+   
+            // blacklist code
+            let blacklistedToken = await blacklistTokenData.findOne({token})
+            if(blacklistedToken){
+                return res.status(401).json({ message: 'Unauthorized, Login Again' });
+              }
+                 // blacklist code ends here
+                 
             const payload = verifyToken(token);
 
             const user = await getUserById(payload._id);
