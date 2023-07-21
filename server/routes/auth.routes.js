@@ -135,12 +135,15 @@ authRouter.post('/getImages', authorization, async (req, res) => {
         
       console.log("favorite",user)
       const favoriteID =req.body.favID;
-      const response = await User.findOneAndUpdate({email:user.email},{...user,favorites:[...user.favorites,favoriteID]});
-        
-        return res.send({
-           message:'favorite Added Successful',
-           response
-        })
+      if (favoriteID){
+        const response = await User.findOneAndUpdate({email:user.email},{...user,favorites:[...user.favorites,favoriteID]});
+          
+          return res.send({
+             message:'favorite Added Successful',
+             response
+          })
+
+      }
     
     } catch (err) {
         console.log(err);
