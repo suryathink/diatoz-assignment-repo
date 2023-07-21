@@ -5,10 +5,27 @@ const authorization = require("../middlewares/authorization");
 const imageModel= require("../models/imageModel")
 const blacklistTokenData = require("../models/blacklist");
 const User = require("../models/userModel");
-
+const mongoose = require('mongoose');
 const authRouter = express.Router();
 
 
+
+authRouter.get("/",async (req,res)=>{
+  try {
+
+    return res.status(201).send({
+       message:'Hello From Backend'
+          })
+} catch (err) {
+    console.log(err);
+
+    return res.status(400).send({
+        error:"Error Happened in Backend"
+    })
+}
+
+
+});
 authRouter.post("/signup", async(req, res) => {
     try {
         const { name, email,password} = req.body;
@@ -154,4 +171,45 @@ authRouter.post('/getImages', authorization, async (req, res) => {
 
    
   })
+
+  // authRouter.get('/favoriteData/:userId',authorization ,async (req, res) => {
+  //   try {
+
+  //     const userId = req.params.userId;
+
+     
+  //     console.log("userId",userId)
+  //     // Validate if the 'userId' is a valid MongoDB ObjectId
+  //     // if (!mongoose.isValidObjectId(userId)) {
+  //     //   return res.status(400).json({ error: 'Invalid user ID' });
+  //     // }
+  
+  //     // Run the aggregate query to fetch favorite data
+  //     const favoriteData = await User.aggregate([
+  //       {
+  //         $match: { _id: userId }
+  //       },
+  //       {
+  //         $lookup: {
+  //           from: 'ImageModel',
+  //           localField: 'favorites',
+  //           foreignField: '_id',
+  //           as: 'favoritesData'
+  //         }
+  //       }
+  //     ]);
+  
+  //     // Check if the user with the given ID exists
+  //     if (favoriteData.length === 0) {
+  //       return res.status(404).json({ error: 'User not found' });
+  //     }
+  
+  //     // Send the favorite data as the response
+  //     res.json(favoriteData[0]);
+  //   } catch (err) {
+  //     console.error('Error fetching favorite data:', err);
+  //     res.status(500).json({ error: 'Internal server error' });
+  //   }
+  // });
+
 module.exports = authRouter;
