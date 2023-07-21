@@ -22,7 +22,7 @@ function NavbarComponent() {
   // }
   const handleLogout = async () => {
    
-    const backendUrl = `http://localhost:8080`;
+    const backendUrl = `https://pantyhose-dugong.cyclic.app`;
 
     try {
       const token = localStorage.getItem('token'); 

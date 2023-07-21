@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 
 const Home = () => {
   const itemsPerPage = 10;
-  const apiUrl = 'http://localhost:8080/getImages';
+  const apiUrl = 'https://pantyhose-dugong.cyclic.app/getImages';
 
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -123,7 +123,7 @@ const Home = () => {
     try {
       const token = localStorage.getItem('token'); // Replace 'token' with the key used to store the token in localStorage.
   
-      const response = await fetch('http://localhost:8080/favorite', {
+      const response = await fetch('https://pantyhose-dugong.cyclic.app/favorite', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

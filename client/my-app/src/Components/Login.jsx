@@ -53,7 +53,7 @@ export default function SignIn() {
   };
    
   async function loginUser(email, password) {
-    const apiUrl = 'http://localhost:8080/login'; 
+    const apiUrl = 'https://pantyhose-dugong.cyclic.app/login'; 
   
     try {
       const response = await fetch(apiUrl, {
