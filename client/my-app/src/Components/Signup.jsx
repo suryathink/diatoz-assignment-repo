@@ -13,10 +13,11 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
+import { blue } from '@mui/material/colors';
+
 
 function Copyright(props) {
-
-   
      return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
@@ -37,7 +38,8 @@ export default function SignUp() {
     const [nameState, setNameState] = useState('');
     const [emailState, setEmailState] = useState("")
     const [passwordState, setPasswordState] = useState("")
-  
+     
+    const navigate = useNavigate();
 
      const sendDataToServer = async () => {
         try {
@@ -55,14 +57,6 @@ export default function SignUp() {
           });
     
           const data = await response.json();
-          // console.log("Data response from server", data); // Handle the response data from the server as needed
-       
-          // if (data.ok){
-          //   console.log("data",data.data.message)
-          //   toast.success(data.data.message);
-          // //   Navigate to Login Page here
-
-          // }
 
           if (!data.ok) {
             console.log("LIne 68",data)
@@ -71,7 +65,7 @@ export default function SignUp() {
           
           toast.success(data.message)
 
-        
+         navigate("/login")
 
         } catch (error) {
           console.error('Error sending data:', error);
@@ -82,36 +76,18 @@ export default function SignUp() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-
-    
-   const fullName= data.get('firstName')+ " "+ data.get('lastName')
-  
-
+   const fullName= data.get('firstName')
    const email = data.get('email')
-
-
    const password = data.get('password')
-   setNameState(fullName)
-   setEmailState(email)
-   setPasswordState(password)
-
-  
+  //  setNameState(fullName)
+  //  setEmailState(email)
+  //  setPasswordState(password)
 
    // Call the function to send data to the server after form submission
    await sendDataToServer();
-    
-//    console.log({
-//        //   fullName:data.get('firstName')+ " "+ data.get('lastName'),
-//        //   email: data.get('email'),
-//        //   password: data.get('password'),
-//        fullName:fullName,
-//        email: email,
-//        password: password,
-       
-//     });
-    
-    // console.log(nameState,emailState,passwordState)
+  
   };
+
 
   useEffect(() => {
     
@@ -139,18 +115,19 @@ export default function SignUp() {
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} >
                 <TextField
                   autoComplete="given-name"
                   name="firstName"
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
+                  label="Full Name"
+                  onChange={(e)=>setNameState(e.target.value)}
                   autoFocus
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <TextField
                   required
                   fullWidth
@@ -159,7 +136,7 @@ export default function SignUp() {
                   name="lastName"
                   autoComplete="family-name"
                 />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12}>
                 <TextField
                   required
@@ -168,6 +145,7 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  onChange={(e)=>{setEmailState(e.target.value)}}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -179,6 +157,7 @@ export default function SignUp() {
                   type="password"
                   id="password"
                   autoComplete="new-password"
+                  onChange={(e)=>{setPasswordState(e.target.value)}}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -198,9 +177,9 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="#" variant="body2">
+                <p style={{color:"#0079FF",cursor:"pointer"}}  onClick={()=>{navigate("/login")}}  variant="body2">
                   Already have an account? Sign in
-                </Link>
+                </p>
               </Grid>
             </Grid>
           </Box>

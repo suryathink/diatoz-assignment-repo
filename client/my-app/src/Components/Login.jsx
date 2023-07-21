@@ -1,6 +1,6 @@
-import  React,{useState} from 'react';
+import  React,{useState,useContext} from 'react';
 import { toast } from 'react-toastify';
-
+import  {useNavigate} from "react-router-dom"
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,6 +14,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ctx } from './Context/AuthContext';
+
 
 function Copyright(props) {
   return (
@@ -34,7 +36,9 @@ const defaultTheme = createTheme();
 export default function SignIn() {
   const [nameState, setNameState] = useState("");
   const [emailState, setEmailState] = useState("")
+  const {setIsAuth} = useContext(ctx)
 
+  const navigate = useNavigate()
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -44,7 +48,7 @@ export default function SignIn() {
     setEmailState(emailState)
     console.log({
       email: data.get('email'),
-      password: data.get('password'),
+      // password: data.get('password'),
     });
   };
    
@@ -73,10 +77,13 @@ export default function SignIn() {
       }
   
    
-      console.log("UserData Coming from Backend",userData)
+      // console.log("UserData Coming from Backend",userData)
       toast.success(userData.message)
-
-      return userData; // Assuming your backend returns user data upon successful login
+      localStorage.setItem("token",userData.data.data.token)
+      setIsAuth(true)
+      navigate("/")
+    // console.log(userData.data.data.token)
+      return userData; 
   
     } catch (error) {
       console.error('Error logging in:', error);
@@ -145,9 +152,12 @@ export default function SignIn() {
                 </Link>
               </Grid> */}
               <Grid item>
-                <Link href="#" variant="body2">
+              <p style={{color:"#0079FF",cursor:"pointer"}}  onClick={()=>{navigate("/signup")}}  variant="body2">
+               Don't have an account? Sign Up
+                </p>
+                {/* <Link href="#" variant="body2">
                   {"Don't have an account? Sign Up"}
-                </Link>
+                </Link> */}
               </Grid>
             </Grid>
           </Box>

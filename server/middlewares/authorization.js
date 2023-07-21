@@ -12,8 +12,6 @@ async function authMiddleware(req, res, next) {
 
         const authHeader = headers['authorization'];
 
-        
-
         if (authHeader) {
 
             const token = authHeader.split(' ').pop();
@@ -28,7 +26,7 @@ async function authMiddleware(req, res, next) {
             const payload = verifyToken(token);
 
             const user = await getUserById(payload._id);
-
+             
             req.loggedInUser = user; 
 
             next();
