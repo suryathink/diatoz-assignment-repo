@@ -15,6 +15,7 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { blue } from '@mui/material/colors';
+import CircularProgress from "@mui/material/CircularProgress";
 
 
 function Copyright(props) {
@@ -38,7 +39,9 @@ export default function SignUp() {
     const [nameState, setNameState] = useState('');
     const [emailState, setEmailState] = useState("")
     const [passwordState, setPasswordState] = useState("")
-     
+    const [emailError, setEmailError] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     const navigate = useNavigate();
 
      const sendDataToServer = async () => {
@@ -75,6 +78,7 @@ export default function SignUp() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true);
     const data = new FormData(event.currentTarget);
    const fullName= data.get('firstName')
    const email = data.get('email')
@@ -85,7 +89,7 @@ export default function SignUp() {
 
    // Call the function to send data to the server after form submission
    await sendDataToServer();
-  
+   setLoading(false);
   };
 
 
@@ -94,6 +98,15 @@ export default function SignUp() {
     // console.log(nameState, emailState, passwordState);
   }, [nameState, emailState, passwordState]);
 
+
+  const handleEmailChange = (e) => {
+    const email = e.target.value;
+    // Regular expression to validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const isValidEmail = emailRegex.test(email);
+    setEmailError(!isValidEmail);
+    setEmailState(email);
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -127,16 +140,7 @@ export default function SignUp() {
                   autoFocus
                 />
               </Grid>
-              {/* <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="family-name"
-                />
-              </Grid> */}
+          
               <Grid item xs={12}>
                 <TextField
                   required
@@ -145,7 +149,11 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  onChange={(e)=>{setEmailState(e.target.value)}}
+                  // onChange={(e)=>{setEmailState(e.target.value)}}
+                  onChange={handleEmailChange}
+                  value={emailState}
+                  error={emailError}
+                  helperText={emailError ? "Please provide valid Email address" : ""} 
                 />
               </Grid>
               <Grid item xs={12}>
@@ -172,8 +180,15 @@ export default function SignUp() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              disabled={
+                nameState === "" ||
+                emailState === "" ||
+                passwordState === "" ||
+                emailError == true ||
+                loading
+              }
             >
-              Sign Up
+             {loading ? <CircularProgress size={20} /> : "Sign Up"}
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
@@ -184,7 +199,7 @@ export default function SignUp() {
             </Grid>
           </Box>
         </Box>
-        {/* <Copyright sx={{ mt: 5 }} /> */}
+    
       </Container>
     </ThemeProvider>
   );
