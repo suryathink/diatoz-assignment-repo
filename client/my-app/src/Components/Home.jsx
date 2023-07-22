@@ -250,6 +250,7 @@ const styles = {
     flexDirection: "column",
     alignItems: "center",
     padding: "30px",
+    paddingTop: "80px"
   },
   imageContainer: {
     display: "grid",
