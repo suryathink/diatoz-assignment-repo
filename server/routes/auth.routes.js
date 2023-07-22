@@ -212,4 +212,16 @@ authRouter.post('/getImages', authorization, async (req, res) => {
   //   }
   // });
 
+
+  authRouter.get('/getallData', async (req, res) => {
+    try {     
+      const images = await imageModel.find()
+    
+      res.status(200).json(images);
+    } catch (error) {
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+
+  
 module.exports = authRouter;
