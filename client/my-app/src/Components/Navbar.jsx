@@ -1,82 +1,239 @@
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import {useNavigate} from 'react-router-dom'
-import { ctx } from './Context/AuthContext';
-import { useContext } from 'react';
-import { toast } from 'react-toastify';
-import { useState } from 'react';
-function NavbarComponent() {
-  const navigate = useNavigate()
-  const [logoutMessage, setLogoutMessage] = useState('');
+// import Container from 'react-bootstrap/Container';
+// import Nav from 'react-bootstrap/Nav';
+// import Navbar from 'react-bootstrap/Navbar';
+// import NavDropdown from 'react-bootstrap/NavDropdown';
+// import {useNavigate} from 'react-router-dom'
+// import { ctx } from './Context/AuthContext';
+// import { useContext } from 'react';
+// import { toast } from 'react-toastify';
+// import { useState } from 'react';
+// function NavbarComponent() {
+//   const navigate = useNavigate()
+//   const [logoutMessage, setLogoutMessage] = useState('');
 
-  const { isAuth, setIsAuth } = useContext(ctx);
+//   const { isAuth, setIsAuth } = useContext(ctx);
   
-  // const handleLogout = () =>{
-  //   console.log("Hello");
-  //   const token = localStorage.getItem("token")
-  //   console.log(token)
+//   // const handleLogout = () =>{
+//   //   console.log("Hello");
+//   //   const token = localStorage.getItem("token")
+//   //   console.log(token)
     
 
-  // }
-  const handleLogout = async () => {
+//   // }
+//   const handleLogout = async () => {
    
-    const backendUrl = `https://pantyhose-dugong.cyclic.app`;
+//     const backendUrl = `https://pantyhose-dugong.cyclic.app`;
 
+//     try {
+//       const token = localStorage.getItem('token'); 
+
+//       const response = await fetch(`${backendUrl}/logout`, {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//           'Authorization': `Bearer ${token}`,
+//         },
+//       });
+
+//       if (response.ok) {
+//         // Logout successful, you may clear the token and perform any other logout actions.
+//         localStorage.removeItem('token'); // Clear the token from localStorage.
+//         localStorage.removeItem('userData'); // Clear the userData from localStorage.
+//         setLogoutMessage('Logout successful');
+//         toast.success('Logout successful')
+
+//       } else {
+//         const data = await response.json();
+//         console.log(data)
+//         setLogoutMessage(data.message); // Display any error message from the backend.
+//         toast.error(data.message)
+//       }
+//     } catch (error) {
+//       setLogoutMessage('Error occurred during logout.');
+//       toast.error('Error occurred during logout.')
+
+//     }
+//     setIsAuth(false)
+//     navigate("/login")
+
+//   };
+
+
+//   return (
+//     <Navbar expand="lg" className="bg-body-tertiary">
+//       <Container>
+//         <Navbar.Brand onClick={()=>{navigate("/")}} >Logo</Navbar.Brand>
+//         <Navbar.Toggle aria-controls="basic-navbar-nav" />
+//         <Navbar.Collapse id="basic-navbar-nav">
+//           <Nav className="me-auto">
+//             <Nav.Link onClick={()=>{navigate("/")}}>Home</Nav.Link>
+//             <Nav.Link onClick={()=>{navigate("/favorites")}}>Favorites</Nav.Link>
+//             <Nav.Link onClick={()=>{navigate("/signup")}}>Signup</Nav.Link>
+//             {
+//               isAuth ? <div><Nav.Link onClick={()=>{handleLogout()}}> Logout </Nav.Link> </div>:  <div><Nav.Link onClick={()=>{navigate("/login")}}>Login</Nav.Link></div>
+//             }
+//             {/* <Nav.Link onClick={()=>{navigate("/login")}}>Login</Nav.Link> */}
+           
+//           </Nav>
+//         </Navbar.Collapse>
+//       </Container>
+//     </Navbar>
+//   );
+// }
+
+// export default NavbarComponent;
+
+import Container from "react-bootstrap/Container";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import NavDropdown from "react-bootstrap/NavDropdown";
+import { useNavigate } from "react-router-dom";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { ctx } from "./Context/AuthContext";
+import { useContext } from "react";
+import { toast } from "react-toastify";
+import { useState } from "react";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import * as React from "react";
+import { Button } from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
+import CircularProgress from "@mui/material/CircularProgress";
+
+
+function NavbarComponent() {
+  const navigate = useNavigate();
+  const [logoutMessage, setLogoutMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const { isAuth, setIsAuth } = useContext(ctx);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+ 
+  const handleLogout = async () => {
+    const backendUrl = `https://pantyhose-dugong.cyclic.app`;
+    
     try {
-      const token = localStorage.getItem('token'); 
+      setLoading(true);
+      const token = localStorage.getItem("token");
 
       const response = await fetch(`${backendUrl}/logout`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (response.ok) {
-        // Logout successful, you may clear the token and perform any other logout actions.
-        localStorage.removeItem('token'); // Clear the token from localStorage.
-        setLogoutMessage('Logout successful');
-        toast.success('Logout successful')
-
+        localStorage.removeItem("token"); // Clear the token from localStorage.
+        setLogoutMessage("Logout successful");
+        toast.success("Logout successful");
       } else {
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         setLogoutMessage(data.message); // Display any error message from the backend.
-        toast.error(data.message)
+        toast.error(data.message);
       }
     } catch (error) {
-      setLogoutMessage('Error occurred during logout.');
-      toast.error('Error occurred during logout.')
-
+      setLogoutMessage("Error occurred during logout.");
+      toast.error("Error occurred during logout.");
     }
-    setIsAuth(false)
-    navigate("/login")
-
+    setLoading(false); // Stop loading
+    setIsAuth(false);
+    navigate("/login");
   };
-
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
-        <Navbar.Brand onClick={()=>{navigate("/")}} >Logo</Navbar.Brand>
+        <Navbar.Brand
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          Logo
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link onClick={()=>{navigate("/")}}>Home</Nav.Link>
-            <Nav.Link onClick={()=>{navigate("/favorites")}}>Favorites</Nav.Link>
-            <Nav.Link onClick={()=>{navigate("/signup")}}>Signup</Nav.Link>
-            {
-              isAuth ? <div><Nav.Link onClick={()=>{handleLogout()}}> Logout </Nav.Link> </div>:  <div><Nav.Link onClick={()=>{navigate("/login")}}>Login</Nav.Link></div>
-            }
-            {/* <Nav.Link onClick={()=>{navigate("/login")}}>Login</Nav.Link> */}
-           
+            <Nav.Link
+              onClick={() => {
+                navigate("/");
+              }}
+            >
+              <HomeIcon fontSize="large" />
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                navigate("/signup");
+              }}
+            >
+              Signup
+            </Nav.Link>
           </Nav>
+          {isAuth ? (
+            <Nav.Link>
+              {" "}
+              <Button
+                id="basic-button"
+                aria-controls={open ? "basic-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handleClick}
+              >
+                <AccountCircleIcon fontSize="large" />
+              </Button>
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "basic-button",
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    navigate("/favorites");
+                  }}
+                  
+                >
+                  Favorites
+                </MenuItem>
+             
+                <MenuItem
+                  onClick={() => {
+                    handleLogout();
+                  }}
+                >
+                {loading ? <CircularProgress size={20} /> : "Logout"}
+
+               
+                </MenuItem>
+              </Menu>{" "}
+            </Nav.Link>
+          ) : (
+            <div>
+              <Nav.Link
+                onClick={() => {
+                  navigate("/login");
+                }}
+              >
+                Login
+              </Nav.Link>
+            </div>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>
+   
   );
 }
 
