@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext ,useEffect} from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Avatar from "@mui/material/Avatar";
@@ -45,13 +45,24 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+
+    if (token){
+      setIsAuth(true)
+      navigate("/")
+    }
+  
+  }, [])
+  
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     loginUser(emailState, passwordState);
-
-    // setNameState(nameState)
-    // setEmailState(emailState)
     console.log({
       email: data.get("email"),
       // password: data.get('password'),
@@ -77,28 +88,24 @@ export default function SignIn() {
 
       if (!userData.ok) {
         console.log("Response1", userData);
-        // If the response status is not in the range 200-299, it means an error occurred
-        // console.log("UserData Coming from Backend",userData.error)
-        // const errorData = await response.json();
         toast.error(userData.error);
       }
 
-      // console.log("UserData Coming from Backend",userData)
       toast.success(userData.message);
       localStorage.setItem("token", userData.data.data.token);
       setIsAuth(true);
       navigate("/");
-      // console.log(userData.data.data.token)
       return userData;
     } catch (error) {
       console.error("Error logging in:", error);
       // toast.error("Something Went Wrong",error)
 
-      // throw new Error('Login failed. Please try again.'); // Generic error message for any login failure
     } finally {
       setLoading(false); // Stop loading
     }
   }
+
+
   const handleEmailChange = (e) => {
     const email = e.target.value;
     // Regular expression to validate email format
@@ -107,6 +114,8 @@ export default function SignIn() {
     setEmailError(!isValidEmail);
     setEmailState(email);
   };
+
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -191,8 +200,3 @@ export default function SignIn() {
     </ThemeProvider>
   );
 }
-/*
-disabled={loading}
-
-
-*/
