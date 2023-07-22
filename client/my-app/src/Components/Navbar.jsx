@@ -1,3 +1,5 @@
+
+
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -14,7 +16,7 @@ import * as React from "react";
 import { Button } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import CircularProgress from "@mui/material/CircularProgress";
-
+import LoginIcon from '@mui/icons-material/Login';
 
 function NavbarComponent() {
   const navigate = useNavigate();
@@ -30,10 +32,10 @@ function NavbarComponent() {
   const handleClose = () => {
     setAnchorEl(null);
   };
- 
+
   const handleLogout = async () => {
     const backendUrl = `https://pantyhose-dugong.cyclic.app`;
-    
+
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
@@ -66,32 +68,22 @@ function NavbarComponent() {
   };
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
-      <Container>
-        <Navbar.Brand
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          Logo
+    <Navbar style={styles.NavbarStyle} expand="lg" className="bg-body-tertiary">
+      <Container  >
+        <Navbar.Brand style={{width:"50px",height:"50px"}}  onClick={() => { navigate("/")}} >
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRv1eThZSlOEJ6n_rv1WmziEZAXGGZjypIx5w&usqp=CAU"  alt="Logo"/>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link
-              onClick={() => {
-                navigate("/");
-              }}
-            >
+            <Nav.Link onClick={() => { navigate("/") }} >
               <HomeIcon fontSize="large" />
             </Nav.Link>
-            <Nav.Link
-              onClick={() => {
-                navigate("/signup");
-              }}
-            >
-              Signup
-            </Nav.Link>
+
+           {isAuth ? (""): (<Nav.Link style={{margin:"auto"}} onClick={() => { navigate("/signup")}} >
+              Create Account
+            </Nav.Link>)}
+
           </Nav>
           {isAuth ? (
             <Nav.Link>
@@ -114,33 +106,18 @@ function NavbarComponent() {
                   "aria-labelledby": "basic-button",
                 }}
               >
-                <MenuItem
-                  onClick={() => {
-                    navigate("/favorites");
-                  }}
-                  
-                >
+                <MenuItem onClick={() => {  navigate("/favorites") }}>
                   Favorites
                 </MenuItem>
-             
-                <MenuItem
-                  onClick={() => {
-                    handleLogout();
-                  }}
-                >
-                {loading ? <CircularProgress size={20} /> : "Logout"}
 
-               
+                <MenuItem onClick={() => {handleLogout() }}>
+                  {loading ? <CircularProgress size={20} /> : "Logout"}
                 </MenuItem>
               </Menu>{" "}
             </Nav.Link>
           ) : (
             <div>
-              <Nav.Link
-                onClick={() => {
-                  navigate("/login");
-                }}
-              >
+              <Nav.Link onClick={() => { navigate("/login") }} >
                 Login
               </Nav.Link>
             </div>
@@ -148,8 +125,16 @@ function NavbarComponent() {
         </Navbar.Collapse>
       </Container>
     </Navbar>
-   
   );
 }
-
+const styles = {
+  NavbarStyle: {
+    position: "fixed",
+    top: "0",
+    left: "0",
+    width: "100%",
+    backgroundColor: "#fff",
+    zIndex: 100, 
+  },
+};
 export default NavbarComponent;
