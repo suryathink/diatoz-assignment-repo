@@ -18,7 +18,6 @@ const Favorites = () => {
   // getting data from redux store
 
   const AllDataFromRedux = useSelector((state) => state.allData);
-  // console.log(AllDataFromRedux)
 
    const filteredData = AllDataFromRedux.filter((e,i)=>{
       if (favoriteData.includes(e._id)){
@@ -26,7 +25,6 @@ const Favorites = () => {
       }
    })
      
-   console.log("filteredDataObjects",filteredData)
   const fetchFavoriteDataArray = async (token) => {
     setLoading(true);
     try {
@@ -40,13 +38,10 @@ const Favorites = () => {
       });
 
       const jsonData = await response.json();
-      //  console.log("Favorite page data ",jsonData)
        setFavoriteData(jsonData.user.favorites)
-       console.log(favoriteData)
        
       
     } catch (error) {
-      // alert(error)
       console.error('Error fetching data:', error);
    
     }finally{
