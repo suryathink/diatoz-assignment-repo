@@ -8,14 +8,17 @@ import "react-toastify/dist/ReactToastify.css";
 import "./styles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AuthContextProvider from "./Components/Context/AuthContext";
-
+import { Provider } from "react-redux";
+import myStore from "./Components/Redux/Store";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <AuthContextProvider>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </AuthContextProvider>
+  <BrowserRouter>
+    <Provider store={myStore}>
+      <AuthContextProvider>
+        <App />
+      </AuthContextProvider>
+    </Provider>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function

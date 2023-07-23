@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { FaBookmark, FaCloudDownloadAlt } from "react-icons/fa";
+import {useDispatch ,useSelector} from 'react-redux'
+import {myActionData,myActionAllData} from "./Redux/Action"
+// https://pantyhose-dugong.cyclic.app/getallData
 const Home = () => {
   const itemsPerPage = 10;
   const apiUrl = "https://pantyhose-dugong.cyclic.app/getImages";
@@ -12,28 +14,17 @@ const Home = () => {
   const [endOfPage, setEndOfPage] = useState(false);
   const [totalPages, setTotalPages] = useState(10);
   const [opacityState, setOpacityState] = useState(-1);
+  const [allData, setAllData] = useState([]);
+  
+  const dispatch = useDispatch();
+  // getting data from redux store
+  const storeData = useSelector((state) => state.data);
+  console.log("Store Data", storeData)
+  const allDataFromStore = useSelector((state) => state.allData);
+  // const storeData = useSelector((data)=>data.data) 
+   console.log("allDataFromStore", allDataFromStore)
 
-  // const fetchData = async (page) => {
-  //   try {
-  //     const response = await fetch(`${apiUrl}?page=${page}&itemsperpage=${itemsPerPage}`);
-  //     const jsonData = await response.json();
-
-  //     if (jsonData.length > 0) {
-  //       // Adding new data to the existing previous data
-  //       setData((prevData) => [...prevData, ...jsonData]);
-  //       setCurrentPage(page);
-  //     } else {
-  //       // No more data available
-  //       setEndOfPage(true);
-  //     }
-
-  //     setLoading(false);
-  //   } catch (error) {
-  //     console.error('Error fetching data:', error);
-  //     setLoading(false);
-  //   }
-  // };
-
+  
   const fetchData = async (page) => {
     try {
       const token = localStorage.getItem("token");
@@ -51,11 +42,12 @@ const Home = () => {
       });
 
       const jsonData = await response.json();
-
+       console.log("jsonData",jsonData)
       if (jsonData.length > 0) {
         // Adding new data to the existing previous data
         setData((prevData) => [...prevData, ...jsonData]);
         setCurrentPage(page);
+        myActionData(jsonData, dispatch);
       } else {
         // No more data available
         setEndOfPage(true);
@@ -85,23 +77,20 @@ const Home = () => {
     }
   };
 
-  //  function download(download_url){
-  //   axios({
-  //                 url:{download_url},
-  //                 method:'GET',
-  //                 responseType: 'blob'
-  //         })
-  //         .then((response) => {
-  //                const url = window.URL
-  //                .createObjectURL(new Blob([response.data]));
-  //                       const link = document.createElement('a');
-  //                       link.href = url;
-  //                       link.setAttribute('download', 'image.jpg');
-  //                       document.body.appendChild(link);
-  //                       link.click();
-  //         })
-  //         }
+  // Function To get All Data
 
+  const allDataMethod = async () =>{
+    try {
+      const data = await fetch (`https://pantyhose-dugong.cyclic.app/getallData`)
+      const jsonData = await data.json();
+      console.log(jsonData);
+      setAllData(jsonData)
+      myActionAllData(jsonData, dispatch);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  
   // Attach event listener for scrolling when the component mounts
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -110,7 +99,16 @@ const Home = () => {
 
   // Initial load of data
   useEffect(() => {
-    fetchData(currentPage);
+    if (storeData.length === 0){
+      fetchData(currentPage);
+      allDataMethod();
+    } else{
+      // const storeData = useSelector((state) => state.data);
+      setData(storeData)
+      setCurrentPage(storeData.length/10)
+      setLoading(false)
+      setAllData(allDataFromStore)
+    }
   }, []);
 
   // Function to add an image to favorites
@@ -147,7 +145,7 @@ const Home = () => {
       <div style={styles.imageContainer}>
         {data?.map((item, i) => (
           <div
-            key={item.id}
+            key={i}
             onMouseEnter={() => {
               setOpacityState(i);
             }}
@@ -157,26 +155,7 @@ const Home = () => {
             style={styles.imageWrapper}
           >
             <img src={item.download_url} alt="" style={styles.image} />
-            {/* <div style={styles.overlay}>
-            <div style={styles.overlayContent}>
-              <p style={styles.authorLabel}>Author: {item.author}</p>
-              <div style={styles.options}>
-                {!isInFavorites(item._id) ? (
-                  <button
-                    onClick={() => addToFavorites(item._id)}
-                    style={styles.favoriteButton}
-                  >
-                    <i className="far fa-heart"></i> Add to Favorites
-                  </button>
-                ) : (
-                  <button style={styles.favoriteButton} disabled>
-                    <i className="fas fa-heart"></i> Added to Favorites
-                  </button>
-                )}
-                <button style={styles.downloadButton}>Download</button>
-              </div>
-            </div>
-          </div> */}
+          
 
             <div
               style={{ ...styles.overlay, opacity: opacityState == i ? 1 : 0 }}
