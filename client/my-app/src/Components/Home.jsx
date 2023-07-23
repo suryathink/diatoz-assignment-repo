@@ -19,10 +19,8 @@ const Home = () => {
   const dispatch = useDispatch();
   // getting data from redux store
   const storeData = useSelector((state) => state.data);
-  console.log("Store Data", storeData)
   const allDataFromStore = useSelector((state) => state.allData);
   // const storeData = useSelector((data)=>data.data) 
-   console.log("allDataFromStore", allDataFromStore)
 
   
   const fetchData = async (page) => {
@@ -42,7 +40,6 @@ const Home = () => {
       });
 
       const jsonData = await response.json();
-       console.log("jsonData",jsonData)
       if (jsonData.length > 0) {
         // Adding new data to the existing previous data
         setData((prevData) => [...prevData, ...jsonData]);
@@ -83,7 +80,6 @@ const Home = () => {
     try {
       const data = await fetch (`https://pantyhose-dugong.cyclic.app/getallData`)
       const jsonData = await data.json();
-      console.log(jsonData);
       setAllData(jsonData)
       myActionAllData(jsonData, dispatch);
     } catch (error) {
@@ -129,13 +125,11 @@ const Home = () => {
       );
 
       const data = await response.json();
-      console.log('Response from backend:', data);
       toast.success(data.message);
     } catch (error) {
       // console.error('Error adding to favorites:', error);
       toast.error("Adding to Bookmarks Failed");
-      // Handle errors that might occur during the POST request.
-      // For example, you can show an error message to the user.
+
     }
   };
 
@@ -168,7 +162,7 @@ const Home = () => {
                   }}
                 >
                   <FaBookmark />
-                  {/* Bookmark */}
+         
                 </button>&nbsp;&nbsp;&nbsp;
                 <button>
                   <a
@@ -177,7 +171,6 @@ const Home = () => {
                     download={item.author}
                   >
                     <FaCloudDownloadAlt />
-                    {/* Download */}
                   </a>
                 </button>
               </div>
