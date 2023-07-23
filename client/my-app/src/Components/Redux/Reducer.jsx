@@ -1,24 +1,10 @@
 let initialData = {
   data: [],
-  allData: []
+  allData: [], 
+  user: [], 
 };
 
-// const myReducer = (state = initialData,action) => {
 
-//     if (action.type === "DATA"){
-//         return (state = {
-//             ...state,
-//             data:action.payload,
-//         })
-//     } else if (action.type==="ALLDATA"){
-//         return (state = {
-//             ...state,
-//             allData:action.payload,
-//         })
-//     }
-
-//     return state
-// };
 
 
 const myReducer = (state = initialData, action) => {
@@ -32,6 +18,11 @@ const myReducer = (state = initialData, action) => {
         return {
             ...state,
             allData: action.payload,
+        };
+    case "USER":
+        return {
+            ...state,
+            user: action.payload,
         };
        
         default:

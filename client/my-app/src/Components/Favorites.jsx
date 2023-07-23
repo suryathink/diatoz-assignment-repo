@@ -28,7 +28,7 @@ const Favorites = () => {
   const fetchFavoriteDataArray = async (token) => {
     setLoading(true);
     try {
-       const apiUrl = `https://pantyhose-dugong.cyclic.app/getfavoritedata`
+       const apiUrl = `http://localhost:8080/getfavoritedata`
        const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -39,8 +39,7 @@ const Favorites = () => {
 
       const jsonData = await response.json();
        setFavoriteData(jsonData.user.favorites)
-       
-      
+    
     } catch (error) {
       console.error('Error fetching data:', error);
    
@@ -58,7 +57,7 @@ const Favorites = () => {
     const token = localStorage.getItem("token"); // Replace 'token' with the key used to store the token in localStorage.
 
     const response = await fetch(
-      "https://pantyhose-dugong.cyclic.app/favorite",
+      "http://localhost:8080/favorite",
       {
         method: "POST",
         headers: {
@@ -68,20 +67,20 @@ const Favorites = () => {
         body: JSON.stringify({ favID }), // Send the 'id' to the backend in the request body.
       }
     );
-//  Extra code starts
+
     if (!response.ok) {
       throw new Error("Adding to favorites failed"); // Throw an error for non-2xx status codes
     }
-     //  Extra code ends
+
 
     const data = await response.json();
-    console.log('Response from backend:', data);
+  
     toast.success(data.message);
-    //  Extra code starts
+    
     fetchFavoriteDataArray(token)
-    //  Extra code ends
+
   } catch (error) {
-    // console.error('Error adding to favorites:', error);
+
     toast.error("Adding to Bookmarks Failed");
     // Handle errors that might occur during the POST request.
     // For example, you can show an error message to the user.

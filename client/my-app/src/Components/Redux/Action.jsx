@@ -12,5 +12,11 @@ export const myActionAllData = (data,dispatch) =>{
      payload:data,
     });
  }
+export const myActionUser = (data,dispatch) =>{
+    dispatch({
+     type:"USER",
+     payload:data,
+    });
+ }
 
  

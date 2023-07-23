@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { FaBookmark, FaCloudDownloadAlt } from "react-icons/fa";
 import {useDispatch ,useSelector} from 'react-redux'
-import {myActionData,myActionAllData} from "./Redux/Action"
+import {myActionData,myActionAllData, myActionUser} from "./Redux/Action"
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+
+
 // https://pantyhose-dugong.cyclic.app/getallData
 const Home = () => {
   const itemsPerPage = 10;
-  const apiUrl = "https://pantyhose-dugong.cyclic.app/getImages";
+  const apiUrl = "http://localhost:8080/getImages";
 
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,15 +18,18 @@ const Home = () => {
   const [totalPages, setTotalPages] = useState(10);
   const [opacityState, setOpacityState] = useState(-1);
   const [allData, setAllData] = useState([]);
+  const [favoritesArray, setFavoritesArray] = useState([]);
   
   const dispatch = useDispatch();
   // getting data from redux store
   const storeData = useSelector((state) => state.data);
   const allDataFromStore = useSelector((state) => state.allData);
-  // const storeData = useSelector((data)=>data.data) 
+  const favData = useSelector((state) => state.user);
+
 
   
   const fetchData = async (page) => {
+   
     try {
       const token = localStorage.getItem("token");
 
@@ -40,11 +46,16 @@ const Home = () => {
       });
 
       const jsonData = await response.json();
-      if (jsonData.length > 0) {
+      myActionUser(jsonData.user.favorites,dispatch)
+      setFavoritesArray(jsonData.user.favorites);
+
+
+      if (jsonData.images.length > 0) {
         // Adding new data to the existing previous data
-        setData((prevData) => [...prevData, ...jsonData]);
+        setData((prevData) => [...prevData, ...jsonData.images]);
         setCurrentPage(page);
-        myActionData(jsonData, dispatch);
+        const jsonImages = jsonData.images
+        myActionData(jsonImages, dispatch);
       } else {
         // No more data available
         setEndOfPage(true);
@@ -58,8 +69,10 @@ const Home = () => {
   };
 
   const handlePageChange = (page) => {
+  
     if (!loading && !endOfPage && page >= 1 && page !== currentPage) {
       setLoading(true);
+      setCurrentPage(page)
       fetchData(page);
     }
   };
@@ -78,7 +91,7 @@ const Home = () => {
 
   const allDataMethod = async () =>{
     try {
-      const data = await fetch (`https://pantyhose-dugong.cyclic.app/getallData`)
+      const data = await fetch (`http://localhost:8080/getallData`)
       const jsonData = await data.json();
       setAllData(jsonData)
       myActionAllData(jsonData, dispatch);
@@ -104,27 +117,34 @@ const Home = () => {
       setCurrentPage(storeData.length/10)
       setLoading(false)
       setAllData(allDataFromStore)
+      setFavoritesArray(favData)
     }
   }, []);
 
   // Function to add an image to favorites
   const addToFavorites = async (favID) => {
     try {
-      const token = localStorage.getItem("token"); // Replace 'token' with the key used to store the token in localStorage.
-
+      const token = localStorage.getItem("token"); 
       const response = await fetch(
-        "https://pantyhose-dugong.cyclic.app/favorite",
+        "http://localhost:8080/favorite",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Include the token in the Authorization header.
+            Authorization: `Bearer ${token}`, 
           },
-          body: JSON.stringify({ favID }), // Send the 'id' to the backend in the request body.
+          body: JSON.stringify({ favID }),
         }
       );
 
       const data = await response.json();
+      // getting favorites array
+  
+      myActionUser(data.user.favorites,dispatch)
+      setFavoritesArray(data.user.favorites);
+
+      // send new fav array to redux  
+      
       toast.success(data.message);
     } catch (error) {
       // console.error('Error adding to favorites:', error);
@@ -161,8 +181,11 @@ const Home = () => {
                     addToFavorites(item._id);
                   }}
                 >
-                  <FaBookmark />
-         
+                {
+                  favoritesArray.includes(item._id) ? <FaBookmark/> : <BookmarkBorderIcon/>
+
+                }
+                  
                 </button>&nbsp;&nbsp;&nbsp;
                 <button>
                   <a

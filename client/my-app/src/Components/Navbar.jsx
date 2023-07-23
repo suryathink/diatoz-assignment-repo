@@ -34,7 +34,7 @@ function NavbarComponent() {
   };
 
   const handleLogout = async () => {
-    const backendUrl = `https://pantyhose-dugong.cyclic.app`;
+    const backendUrl = `http://localhost:8080`;
 
     try {
       setLoading(true);
