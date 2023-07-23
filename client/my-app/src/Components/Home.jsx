@@ -9,7 +9,7 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 // https://pantyhose-dugong.cyclic.app/getallData
 const Home = () => {
   const itemsPerPage = 10;
-  const apiUrl = "http://localhost:8080/getImages";
+  const apiUrl = "https://pantyhose-dugong.cyclic.app/getImages";
 
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -91,7 +91,7 @@ const Home = () => {
 
   const allDataMethod = async () =>{
     try {
-      const data = await fetch (`http://localhost:8080/getallData`)
+      const data = await fetch (`https://pantyhose-dugong.cyclic.app/getallData`)
       const jsonData = await data.json();
       setAllData(jsonData)
       myActionAllData(jsonData, dispatch);
@@ -126,7 +126,7 @@ const Home = () => {
     try {
       const token = localStorage.getItem("token"); 
       const response = await fetch(
-        "http://localhost:8080/favorite",
+        "https://pantyhose-dugong.cyclic.app/favorite",
         {
           method: "POST",
           headers: {

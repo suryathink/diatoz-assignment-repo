@@ -28,7 +28,7 @@ const Favorites = () => {
   const fetchFavoriteDataArray = async (token) => {
     setLoading(true);
     try {
-       const apiUrl = `http://localhost:8080/getfavoritedata`
+       const apiUrl = `https://pantyhose-dugong.cyclic.app/getfavoritedata`
        const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
@@ -57,7 +57,7 @@ const Favorites = () => {
     const token = localStorage.getItem("token"); // Replace 'token' with the key used to store the token in localStorage.
 
     const response = await fetch(
-      "http://localhost:8080/favorite",
+      "https://pantyhose-dugong.cyclic.app/favorite",
       {
         method: "POST",
         headers: {
