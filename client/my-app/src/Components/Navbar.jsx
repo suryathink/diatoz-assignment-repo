@@ -54,7 +54,7 @@ function NavbarComponent() {
         toast.success("Logout successful");
       } else {
         const data = await response.json();
-        console.log(data);
+
         setLogoutMessage(data.message); // Display any error message from the backend.
         toast.error(data.message);
       }
