@@ -152,32 +152,55 @@ authRouter.post('/getImages', authorization, async (req, res) => {
   })
 
 
-  authRouter.post("/favorite", authorization, async(req, res) => {
-    try {
-      const user = req.loggedInUser;
-        
-      console.log("favorite",user)
-      const favoriteID =req.body.favID;
-      if (favoriteID){
-        const response = await User.findOneAndUpdate({email:user.email},{...user,favorites:[...user.favorites,favoriteID]});
-          
-          return res.send({
-             message:'favorite Added Successful',
-             response
-          })
+  
 
-      }
-    
+  authRouter.post("/favorite", authorization, async (req, res) => {
+    try {
+        const user = req.loggedInUser;
+        console.log("favorite", user);
+
+        const favoriteID = req.body.favID;
+        if (!favoriteID) {
+            return res.status(400).send({
+                error: "Favorite ID not provided in the request body.",
+            });
+        }
+
+        // Check if the favoriteID is already present in the favorites array
+        const isFavorite = user.favorites.includes(favoriteID);
+
+        if (isFavorite) {
+            // Remove the favoriteID from the favorites array
+            const updatedUser = await User.findOneAndUpdate(
+                { email: user.email },
+                { $pull: { favorites: favoriteID } },
+                { new: true }
+            );
+
+            return res.send({
+                message: "Item Removed from Favorites",
+                user: updatedUser,
+            });
+        } else {
+            // Add the favoriteID to the favorites array
+            const updatedUser = await User.findOneAndUpdate(
+                { email: user.email },
+                { $push: { favorites: favoriteID } },
+                { new: true }
+            );
+
+            return res.send({
+                message: "Item added into favorites",
+                user: updatedUser,
+            });
+        }
     } catch (err) {
         console.log(err);
         return res.status(500).send({
-            error:'Something went wrong'
-        })
+            error: "Something went wrong",
+        });
     }
-
-   
-  })
-
+});
 
 
   authRouter.post("/getfavoritedata", authorization, async(req, res) => {
