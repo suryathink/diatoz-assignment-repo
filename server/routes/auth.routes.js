@@ -111,6 +111,8 @@ authRouter.post("/sendimage", async(req, res) => {
 authRouter.post('/getImages', authorization, async (req, res) => {
     try {
       // /getImages?page=1&itemsperpage=10
+      const user = req.loggedInUser;
+
       const page = parseInt(req.query.page) || 1;
       const itemsperpage = 10;
     
@@ -119,6 +121,10 @@ authRouter.post('/getImages', authorization, async (req, res) => {
       const images = await imageModel.find().skip(startIndex).limit(itemsperpage);
     
       res.status(200).json(images);
+    //   return res.send({
+    //     images,
+    //     user
+    //  })
     } catch (error) {
       res.status(500).json({ error: 'Internal Server Error' });
     }
@@ -161,6 +167,27 @@ authRouter.post('/getImages', authorization, async (req, res) => {
           })
 
       }
+    
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send({
+            error:'Something went wrong'
+        })
+    }
+
+   
+  })
+
+
+
+  authRouter.post("/getfavoritedata", authorization, async(req, res) => {
+    try {
+      const user = req.loggedInUser;
+      console.log("favorite",user)     
+          return res.send({
+             message:'favorite Data Sent',
+             user
+          })
     
     } catch (err) {
         console.log(err);
