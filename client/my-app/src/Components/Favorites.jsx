@@ -1,6 +1,8 @@
 import React ,{useState,useEffect}from 'react'
 import { useNavigate } from 'react-router-dom';
 import {useDispatch ,useSelector} from 'react-redux'
+import { FaBookmark, FaCloudDownloadAlt } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const Favorites = () => {
 
@@ -44,7 +46,7 @@ const Favorites = () => {
        
       
     } catch (error) {
-      alert(error)
+      // alert(error)
       console.error('Error fetching data:', error);
    
     }finally{
@@ -54,17 +56,59 @@ const Favorites = () => {
   };
     
 
+
+ // Function to add an image to favorites
+ const addToFavorites = async (favID) => {
+  try {
+    const token = localStorage.getItem("token"); // Replace 'token' with the key used to store the token in localStorage.
+
+    const response = await fetch(
+      "https://pantyhose-dugong.cyclic.app/favorite",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include the token in the Authorization header.
+        },
+        body: JSON.stringify({ favID }), // Send the 'id' to the backend in the request body.
+      }
+    );
+//  Extra code starts
+    if (!response.ok) {
+      throw new Error("Adding to favorites failed"); // Throw an error for non-2xx status codes
+    }
+     //  Extra code ends
+
+    const data = await response.json();
+    console.log('Response from backend:', data);
+    toast.success(data.message);
+    //  Extra code starts
+    fetchFavoriteDataArray(token)
+    //  Extra code ends
+  } catch (error) {
+    // console.error('Error adding to favorites:', error);
+    toast.error("Adding to Bookmarks Failed");
+    // Handle errors that might occur during the POST request.
+    // For example, you can show an error message to the user.
+  }
+};
+
+const handleAddToFavorites = (favID) => {
+  addToFavorites(favID);
+};
+
 useEffect(()=>{
- fetchFavoriteDataArray(token)
-},[])
-
-
+  fetchFavoriteDataArray(token)
+ },[token])
   return (
     <div style={styles.container}>
     <h2>Favorite Page</h2>
-      {/* Display the paginated items */}
+    <br/>
+     {
+      filteredData.length > 0 ? (
       <div style={styles.imageContainer}>
-        {filteredData?.map((item, i) => (
+        {
+          filteredData?.map((item, i) => (
           <div
             key={item.id}
             onMouseEnter={() => {
@@ -82,11 +126,34 @@ useEffect(()=>{
               style={{ ...styles.overlay, opacity: opacityState == i ? 1 : 0 }}
             >
               <p style={{marginBottom:"0px"}}>{item.author}</p>
-             
+              <div style={{ display: "flex",  color: "white" }}>
+                <button
+                  onClick={() => {
+                    handleAddToFavorites(item._id);
+                  }}
+                >
+                  <FaBookmark />
+                  {/* Bookmark */}
+                </button>&nbsp;&nbsp;&nbsp;
+                <button>
+                  <a
+                    style={{ textDecoration: "none", color: "white" }}
+                    href={item.download_url}
+                    download={item.author}
+                  >
+                    <FaCloudDownloadAlt />
+                    {/* Download */}
+                  </a>
+                </button>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
+        ))
+         
+        }
+      </div>) : (<h6>No Favorites Data Present</h6>)
+     }
+    
      
     </div>
   );

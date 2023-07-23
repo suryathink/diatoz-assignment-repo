@@ -129,7 +129,7 @@ const Home = () => {
       );
 
       const data = await response.json();
-      // console.log('Response from backend:', data);
+      console.log('Response from backend:', data);
       toast.success(data.message);
     } catch (error) {
       // console.error('Error adding to favorites:', error);
