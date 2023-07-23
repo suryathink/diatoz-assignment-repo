@@ -62,7 +62,6 @@ export default function SignUp() {
           const data = await response.json();
 
           if (!data.ok) {
-            console.log("LIne 68",data)
             toast.error(data.error)
           } 
           
@@ -95,7 +94,6 @@ export default function SignUp() {
 
   useEffect(() => {
     
-    // console.log(nameState, emailState, passwordState);
   }, [nameState, emailState, passwordState]);
 
 
@@ -149,7 +147,6 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  // onChange={(e)=>{setEmailState(e.target.value)}}
                   onChange={handleEmailChange}
                   value={emailState}
                   error={emailError}
