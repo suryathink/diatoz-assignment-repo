@@ -63,10 +63,9 @@ export default function SignIn() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     loginUser(emailState, passwordState);
-    console.log({
-      email: data.get("email"),
-      // password: data.get('password'),
-    });
+    // console.log({
+    //   email: data.get("email"),
+    // });
   };
 
   async function loginUser(email, password) {
@@ -85,9 +84,7 @@ export default function SignIn() {
         }),
       });
       const userData = await response.json();
-      console.log("userData",userData)
       if (!userData.ok) {
-        console.log("Response1", userData);
         toast.error(userData.error);
       }
 
