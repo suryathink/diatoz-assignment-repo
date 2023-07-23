@@ -23,10 +23,4 @@
 5. Implemented Infinite Scrolling on Home Page
 
 
-## Known Issue
-In the Frontend Part, in `/favorites` route, I am facing issues. The issue is that one of the `useState` hooks is updating late. By the time it is updated, the whole code execution gets completed, and that's why the data does not render on the UI. I have tried using different techniques, including using the `useEffect` hook and all.
 
-I may be making some mistakes there.
-That's why `/favorites` route in frontend is not working as expected.
-
-Rest All is Completed.
